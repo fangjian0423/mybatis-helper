@@ -1,6 +1,5 @@
 package mybatis;
 
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -70,6 +69,22 @@ public class StudentDaoTest {
             sqlSession = sqlSessionFactory.openSession();
             StudentDao studentDao = sqlSession.getMapper(StudentDao.class);
             studentDao.delete(3l, Student.class);
+            sqlSession.commit();
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testUpdate() {
+        SqlSession sqlSession = null;
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            StudentDao studentDao = sqlSession.getMapper(StudentDao.class);
+            Student stu = new Student();
+            stu.setId(2l);
+            stu.setName("format33");
+            studentDao.update(stu, Student.class);
             sqlSession.commit();
         } finally {
             sqlSession.close();

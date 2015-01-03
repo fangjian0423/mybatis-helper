@@ -25,6 +25,6 @@ public interface BaseDao<T extends Entity, DTO> {
     int delete(@Param("id")Long id, @Param("entity")Class entityCls);
 
     @UpdateProvider(type = SqlProvider.class, method = "update")
-    int update(T entity, @Param("entity")Class entityCls);
+    int update(@Param("model")T entity, @Param("entity")Class entityCls);
 
 }

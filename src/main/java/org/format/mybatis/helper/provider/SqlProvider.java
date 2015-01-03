@@ -5,6 +5,7 @@ import org.format.mybatis.helper.annotation.Column;
 import org.format.mybatis.helper.entity.Entity;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.Map;
 
 public class SqlProvider {
@@ -60,6 +61,26 @@ public class SqlProvider {
     }
 
     public String update(Map<String, Object> dataMap) {
+        Class entity = getEntity(dataMap);
+        try {
+            Field[] fields = entity.getDeclaredFields();
+            Object model = dataMap.get("model");
+            Map<String, Object> entityData = new HashMap<String, Object>();
+            for(int i = 0; i < fields.length; i ++) {
+                fields[i].setAccessible(true);
+                if(fields[i].get(model) != null) {
+                    String column = fields[i].getAnnotation(Column.class) == null ? fields[i].getName() : fields[i].getAnnotation(Column.class).value();
+                    entityData.put(column, fields[i].getName());
+                }
+            }
+            StringBuilder sql = new StringBuilder("update " + entity.getSimpleName().toUpperCase() + " set ");
+            for(String column : entityData.keySet()) {
+                sql.append(column + "=#{model." + entityData.get(column) + "},");
+            }
+            return sql.substring(0, sql.length() - 1) + " where id = #{model.id}";
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
