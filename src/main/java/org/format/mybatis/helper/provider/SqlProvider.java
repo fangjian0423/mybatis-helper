@@ -2,6 +2,7 @@ package org.format.mybatis.helper.provider;
 
 import org.apache.ibatis.jdbc.SQL;
 import org.format.mybatis.helper.annotation.Column;
+import org.format.mybatis.helper.entity.Entity;
 import org.format.mybatis.helper.exception.MybatisHelperException;
 
 import java.lang.reflect.Field;
@@ -57,15 +58,14 @@ public class SqlProvider {
         }.toString();
     }
 
-    public String insert(Map<String, Object> dataMap) {
+    public String insert(Entity model) {
         try {
-            Object model = dataMap.get("model");
             final Field[] fields = model.getClass().getDeclaredFields();
             return new SQL() {
                 {
                     INSERT_INTO(TABLE_NAME);
                     for(int i = 0; i < fields.length; i ++) {
-                        VALUES(fields[i].getAnnotation(Column.class) == null ? fields[i].getName() : fields[i].getAnnotation(Column.class).value(), "#{model." + fields[i].getName() + "}");
+                        VALUES(fields[i].getAnnotation(Column.class) == null ? fields[i].getName() : fields[i].getAnnotation(Column.class).value(), "#{" + fields[i].getName() + "}");
                     }
                 }
             }.toString();
@@ -74,17 +74,16 @@ public class SqlProvider {
         }
     }
 
-    public String update(Map<String, Object> dataMap) {
+    public String update(Entity model) {
         try {
-            Object model = dataMap.get("model");
             final Map<String, Object> entityData = getParam(model);
             return new SQL() {
                 {
                     UPDATE(TABLE_NAME);
                     for(String column : entityData.keySet()) {
-                        SET(column + "=#{model." + entityData.get(column) + "}");
+                        SET(column + "=#{" + entityData.get(column) + "}");
                     }
-                    WHERE("id = #{model.id}");
+                    WHERE("id = #{id}");
                 }
             }.toString();
         } catch(Exception e) {

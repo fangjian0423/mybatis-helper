@@ -19,12 +19,12 @@ public interface BaseDao<T extends Entity> {
     List<T> getAll();
 
     @InsertProvider(type = SqlProvider.class, method = "insert")
-    int insert(@Param("model")T entity);
+    int insert(T entity);
 
     @DeleteProvider(type = SqlProvider.class, method = "delete")
     int delete(@Param("id")Long id);
 
     @UpdateProvider(type = SqlProvider.class, method = "update")
-    int update(@Param("model")T entity);
+    int update(T entity);
 
 }

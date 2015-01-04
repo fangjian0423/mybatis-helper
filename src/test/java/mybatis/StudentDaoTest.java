@@ -99,7 +99,7 @@ public class StudentDaoTest {
             sqlSession = sqlSessionFactory.openSession();
             StudentDao studentDao = sqlSession.getMapper(StudentDao.class);
             Student stu = new Student();
-            stu.setId(2l);
+            stu.setId(4l);
             stu.setName("format33");
             studentDao.update(stu);
             sqlSession.commit();
