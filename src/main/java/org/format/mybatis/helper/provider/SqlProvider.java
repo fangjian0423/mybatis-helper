@@ -14,17 +14,7 @@ public class SqlProvider {
         try {
             final Class entity = getEntity(dataMap);
             Object model = dataMap.get("model");
-            final Map<String, Object> entityData = new HashMap<String, Object>();
-            if(model != null) {
-                Field[] fields = entity.getDeclaredFields();
-                for(int i = 0; i < fields.length; i ++) {
-                    fields[i].setAccessible(true);
-                    if(fields[i].get(model) != null) {
-                        String column = fields[i].getAnnotation(Column.class) == null ? fields[i].getName() : fields[i].getAnnotation(Column.class).value();
-                        entityData.put(column, fields[i].getName());
-                    }
-                }
-            }
+            final Map<String, Object> entityData = getParam(entity, model);
             return new SQL() {
                 {
                     SELECT("*");
@@ -43,17 +33,7 @@ public class SqlProvider {
         try {
             final Class entity = getEntity(dataMap);
             Object model = dataMap.get("model");
-            final Map<String, Object> entityData = new HashMap<String, Object>();
-            if(model != null) {
-                Field[] fields = entity.getDeclaredFields();
-                for(int i = 0; i < fields.length; i ++) {
-                    fields[i].setAccessible(true);
-                    if(fields[i].get(model) != null) {
-                        String column = fields[i].getAnnotation(Column.class) == null ? fields[i].getName() : fields[i].getAnnotation(Column.class).value();
-                        entityData.put(column, fields[i].getName());
-                    }
-                }
-            }
+            final Map<String, Object> entityData = getParam(entity, model);
             return new SQL() {
                 {
                     SELECT("count(*)");
@@ -98,16 +78,8 @@ public class SqlProvider {
     public String update(Map<String, Object> dataMap) {
         try {
             final Class entity = getEntity(dataMap);
-            Field[] fields = entity.getDeclaredFields();
             Object model = dataMap.get("model");
-            final Map<String, Object> entityData = new HashMap<String, Object>();
-            for(int i = 0; i < fields.length; i ++) {
-                fields[i].setAccessible(true);
-                if(fields[i].get(model) != null) {
-                    String column = fields[i].getAnnotation(Column.class) == null ? fields[i].getName() : fields[i].getAnnotation(Column.class).value();
-                    entityData.put(column, fields[i].getName());
-                }
-            }
+            final Map<String, Object> entityData = getParam(entity, model);
             return new SQL() {
                 {
                     UPDATE(entity.getSimpleName().toUpperCase());
@@ -138,6 +110,22 @@ public class SqlProvider {
             throw new MybatisHelperException("entity param is error");
         }
         return (Class) entityObj;
+    }
+
+    private Map<String, Object> getParam(Class entity, Object model) throws Exception {
+        Map<String, Object> entityData = new HashMap<String, Object>();
+        if(model == null) {
+            return entityData;
+        }
+        Field[] fields = entity.getDeclaredFields();
+        for(int i = 0; i < fields.length; i ++) {
+            fields[i].setAccessible(true);
+            if(fields[i].get(model) != null) {
+                String column = fields[i].getAnnotation(Column.class) == null ? fields[i].getName() : fields[i].getAnnotation(Column.class).value();
+                entityData.put(column, fields[i].getName());
+            }
+        }
+        return entityData;
     }
 
 
