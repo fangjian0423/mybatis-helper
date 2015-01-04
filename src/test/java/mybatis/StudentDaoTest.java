@@ -47,6 +47,23 @@ public class StudentDaoTest {
     }
 
     @Test
+    public void testSearch() {
+        SqlSession sqlSession = null;
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            StudentDao studentDao = sqlSession.getMapper(StudentDao.class);
+            Student search = new Student();
+            search.setName("format33");
+            List<Student> studentList = studentDao.query(search, Student.class);
+            System.out.println(studentList);
+            int count = studentDao.count(search, Student.class);
+            System.out.println(count);
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
     public void testAdd() {
         SqlSession sqlSession = null;
         try {

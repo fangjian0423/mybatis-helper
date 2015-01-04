@@ -10,10 +10,10 @@ public interface BaseDao<T extends Entity> {
 
     @SelectProvider(type = SqlProvider.class, method = "query")
     @ResultMap("resultMap")
-    List<T> query(@Param("search")T search, @Param("entity")Class entityCls);
+    List<T> query(@Param("model")T search, @Param("entity")Class entityCls);
 
     @SelectProvider(type = SqlProvider.class, method = "count")
-    int count(@Param("search")T search, @Param("entity")Class entityCls);
+    int count(@Param("model")T search, @Param("entity")Class entityCls);
 
     @SelectProvider(type = SqlProvider.class, method = "getAll")
     List<T> getAll(@Param("entity")Class entityCls);

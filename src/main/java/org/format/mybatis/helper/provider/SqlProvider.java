@@ -11,25 +11,61 @@ import java.util.Map;
 public class SqlProvider {
 
     public String query(Map<String, Object> dataMap) {
-        final Class entity = getEntity(dataMap);
-        return new SQL() {
-            {
-                SELECT("*");
-                FROM(entity.getSimpleName().toUpperCase());
-                //TODO 加上查询条件
+        try {
+            final Class entity = getEntity(dataMap);
+            Object model = dataMap.get("model");
+            final Map<String, Object> entityData = new HashMap<String, Object>();
+            if(model != null) {
+                Field[] fields = entity.getDeclaredFields();
+                for(int i = 0; i < fields.length; i ++) {
+                    fields[i].setAccessible(true);
+                    if(fields[i].get(model) != null) {
+                        String column = fields[i].getAnnotation(Column.class) == null ? fields[i].getName() : fields[i].getAnnotation(Column.class).value();
+                        entityData.put(column, fields[i].getName());
+                    }
+                }
             }
-        }.toString();
+            return new SQL() {
+                {
+                    SELECT("*");
+                    FROM(entity.getSimpleName().toUpperCase());
+                    for(String column : entityData.keySet()) {
+                        WHERE(column + "=#{model." + entityData.get(column) + "}");
+                    }
+                }
+            }.toString();
+        } catch(Exception e) {
+            throw new MybatisHelperException("query sql error", e);
+        }
     }
 
     public String count(Map<String, Object> dataMap) {
-        final Class entity = getEntity(dataMap);
-        return new SQL() {
-            {
-                SELECT("count(*)");
-                FROM(entity.getSimpleName().toUpperCase());
-                //TODO 加上查询条件
+        try {
+            final Class entity = getEntity(dataMap);
+            Object model = dataMap.get("model");
+            final Map<String, Object> entityData = new HashMap<String, Object>();
+            if(model != null) {
+                Field[] fields = entity.getDeclaredFields();
+                for(int i = 0; i < fields.length; i ++) {
+                    fields[i].setAccessible(true);
+                    if(fields[i].get(model) != null) {
+                        String column = fields[i].getAnnotation(Column.class) == null ? fields[i].getName() : fields[i].getAnnotation(Column.class).value();
+                        entityData.put(column, fields[i].getName());
+                    }
+                }
             }
-        }.toString();
+            return new SQL() {
+                {
+                    SELECT("count(*)");
+                    FROM(entity.getSimpleName().toUpperCase());
+                    for(String column : entityData.keySet()) {
+                        WHERE(column + "=#{model." + entityData.get(column) + "}");
+                    }
+                }
+            }.toString();
+        } catch(Exception e) {
+            throw new MybatisHelperException("count sql error", e);
+        }
     }
 
     public String getAll(Map<String, Object> dataMap) {
