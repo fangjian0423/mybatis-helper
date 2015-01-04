@@ -85,7 +85,7 @@ public class StudentDaoTest {
         try {
             sqlSession = sqlSessionFactory.openSession();
             StudentDao studentDao = sqlSession.getMapper(StudentDao.class);
-            studentDao.delete(3l);
+            studentDao.delete(5l);
             sqlSession.commit();
         } finally {
             sqlSession.close();

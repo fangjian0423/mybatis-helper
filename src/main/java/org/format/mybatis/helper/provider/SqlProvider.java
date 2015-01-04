@@ -91,7 +91,7 @@ public class SqlProvider {
         }
     }
 
-    public String delete(Map<String, Object> dataMap) {
+    public String delete(Long id) {
         return new SQL() {
             {
                 DELETE_FROM(TABLE_NAME);

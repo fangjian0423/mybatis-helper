@@ -22,7 +22,7 @@ public interface BaseDao<T extends Entity> {
     int insert(T entity);
 
     @DeleteProvider(type = SqlProvider.class, method = "delete")
-    int delete(@Param("id")Long id);
+    int delete(Long id);
 
     @UpdateProvider(type = SqlProvider.class, method = "update")
     int update(T entity);
