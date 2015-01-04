@@ -37,9 +37,9 @@ public class StudentDaoTest {
         try {
             sqlSession = sqlSessionFactory.openSession();
             StudentDao studentDao = sqlSession.getMapper(StudentDao.class);
-            List<Student> studentList = studentDao.query(new Student(), Student.class);
+            List<Student> studentList = studentDao.query(new Student());
             System.out.println(studentList);
-            int count = studentDao.count(null, Student.class);
+            int count = studentDao.count(new Student());
             System.out.println(count);
         } finally {
             sqlSession.close();
@@ -54,9 +54,9 @@ public class StudentDaoTest {
             StudentDao studentDao = sqlSession.getMapper(StudentDao.class);
             Student search = new Student();
             search.setName("format33");
-            List<Student> studentList = studentDao.query(search, Student.class);
+            List<Student> studentList = studentDao.query(search);
             System.out.println(studentList);
-            int count = studentDao.count(search, Student.class);
+            int count = studentDao.count(search);
             System.out.println(count);
         } finally {
             sqlSession.close();
@@ -72,7 +72,7 @@ public class StudentDaoTest {
             Student stu = new Student();
             stu.setName("format22");
             stu.setClassroomId(1);
-            studentDao.insert(stu, Student.class);
+            studentDao.insert(stu);
             sqlSession.commit();
         } finally {
             sqlSession.close();
@@ -85,7 +85,7 @@ public class StudentDaoTest {
         try {
             sqlSession = sqlSessionFactory.openSession();
             StudentDao studentDao = sqlSession.getMapper(StudentDao.class);
-            studentDao.delete(3l, Student.class);
+            studentDao.delete(3l);
             sqlSession.commit();
         } finally {
             sqlSession.close();
@@ -101,7 +101,7 @@ public class StudentDaoTest {
             Student stu = new Student();
             stu.setId(2l);
             stu.setName("format33");
-            studentDao.update(stu, Student.class);
+            studentDao.update(stu);
             sqlSession.commit();
         } finally {
             sqlSession.close();

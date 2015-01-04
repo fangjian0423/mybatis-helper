@@ -9,7 +9,7 @@
     </settings>
 
     <plugins>
-        <plugin interceptor="org.format.mybatis.helper.interceptor.ExecutorInterceptor"></plugin>
+        <plugin interceptor="org.format.mybatis.helper.interceptor.MyBatisHelperInterceptor"></plugin>
     </plugins>
 
     <environments default="development">
