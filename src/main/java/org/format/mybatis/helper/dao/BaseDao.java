@@ -6,14 +6,14 @@ import org.format.mybatis.helper.provider.SqlProvider;
 
 import java.util.List;
 
-public interface BaseDao<T extends Entity, DTO> {
+public interface BaseDao<T extends Entity> {
 
     @SelectProvider(type = SqlProvider.class, method = "query")
     @ResultMap("resultMap")
-    List<T> query(@Param("search")DTO search, @Param("entity")Class entityCls);
+    List<T> query(@Param("search")T search, @Param("entity")Class entityCls);
 
     @SelectProvider(type = SqlProvider.class, method = "count")
-    int count(@Param("search")DTO search, @Param("entity")Class entityCls);
+    int count(@Param("search")T search, @Param("entity")Class entityCls);
 
     @SelectProvider(type = SqlProvider.class, method = "getAll")
     List<T> getAll(@Param("entity")Class entityCls);
