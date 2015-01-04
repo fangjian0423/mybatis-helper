@@ -2,6 +2,7 @@ package org.format.mybatis.helper.provider;
 
 import org.apache.ibatis.jdbc.SQL;
 import org.format.mybatis.helper.annotation.Column;
+import org.format.mybatis.helper.exception.MybatisHelperException;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -54,9 +55,8 @@ public class SqlProvider {
                 }
             }.toString();
         } catch(Exception e) {
-            e.printStackTrace();
+            throw new MybatisHelperException("construct insert sql error", e);
         }
-        return null;
     }
 
     public String update(Map<String, Object> dataMap) {
@@ -82,9 +82,8 @@ public class SqlProvider {
                 }
             }.toString();
         } catch(Exception e) {
-            e.printStackTrace();
+            throw new MybatisHelperException("construct update sql error", e);
         }
-        return null;
     }
 
     public String delete(Map<String, Object> dataMap) {
@@ -100,7 +99,7 @@ public class SqlProvider {
     private Class getEntity(Map<String, Object> dataMap) {
         Object entityObj = dataMap.get("entity");
         if(entityObj == null) {
-            throw new IllegalArgumentException("entity param is error");
+            throw new MybatisHelperException("entity param is error");
         }
         return (Class) entityObj;
     }
