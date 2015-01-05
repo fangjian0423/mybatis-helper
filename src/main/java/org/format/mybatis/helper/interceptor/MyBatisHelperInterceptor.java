@@ -41,22 +41,7 @@ public class MyBatisHelperInterceptor implements Interceptor {
                     ReflectionUtils.makeAccessible(mappedStatementField);
                     MappedStatement mappedStatement = (MappedStatement)ReflectionUtils.getField(mappedStatementField, delegate);
 
-                    Collection<ResultMap> resultMapList = mappedStatement.getConfiguration().getResultMaps();
-
-                    Class entityCls = null;
-
-
-                    String key = mappedStatement.getResource().substring(0, mappedStatement.getResource().lastIndexOf(".")).replaceAll("/", ".") + ".resultMap";
-
-                    for(ResultMap resultMap : resultMapList) {
-                        if(resultMap.getId().equals(key)) {
-                            entityCls = resultMap.getType();
-                        }
-                    }
-
-                    if(entityCls == null) {
-                        throw new MybatisHelperException("can not found a ResultMap named resultMap");
-                    }
+                    Class entityCls = getEntityCls(mappedStatement);
 
                     Field boundSqlField = ReflectionUtils.findField(delegate.getClass(), "boundSql");
                     ReflectionUtils.makeAccessible(boundSqlField);
@@ -88,6 +73,32 @@ public class MyBatisHelperInterceptor implements Interceptor {
                 throw new MybatisHelperException("mybatishelperinterceptor handle error", e);
             }
         }
+    }
+
+    private Class getEntityCls(MappedStatement mappedStatement) {
+        Collection<ResultMap> resultMapList = mappedStatement.getConfiguration().getResultMaps();
+
+        Class entityCls = null;
+
+        String key = mappedStatement.getResource().substring(0, mappedStatement.getResource().lastIndexOf(".")).replaceAll("/", ".") + ".resultMap";
+
+        Object[] resultMapArr = resultMapList.toArray();
+
+        for(int i = 0, j = resultMapArr.length; i < j; i ++) {
+            if(resultMapArr[i] instanceof ResultMap) {
+                ResultMap rs = ((ResultMap) resultMapArr[i]);
+                if(rs.getId().equals(key)) {
+                    entityCls = rs.getType();
+                    break;
+                }
+            }
+        }
+
+        if(entityCls == null) {
+            throw new MybatisHelperException("can not found a ResultMap named resultMap");
+        }
+
+        return entityCls;
     }
 
     @Override
