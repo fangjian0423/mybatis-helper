@@ -4,17 +4,17 @@ import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
+import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.plugin.Invocation;
-import org.apache.ibatis.session.Configuration;
 import org.format.mybatis.helper.exception.MybatisHelperException;
 import org.format.mybatis.helper.provider.SqlProvider;
+import org.format.mybatis.helper.query.PageAndSortEntity;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.List;
 import java.util.Properties;
 
 public class MyBatisHelperInterceptor implements Interceptor {
@@ -65,7 +65,16 @@ public class MyBatisHelperInterceptor implements Interceptor {
                     Field sqlField = ReflectionUtils.findField(boundSql.getClass(), "sql");
                     ReflectionUtils.makeAccessible(sqlField);
 
-                    ReflectionUtils.setField(sqlField, boundSql, sql.replaceAll(SqlProvider.TABLE_NAME, entityCls.getSimpleName().toUpperCase()));
+                    StringBuilder newSql = new StringBuilder(sql.replaceAll(SqlProvider.TABLE_NAME, entityCls.getSimpleName().toUpperCase()));
+
+                    if(mappedStatement.getSqlCommandType() == SqlCommandType.SELECT) {
+                        // append page and sort sql
+                        if(PageAndSortEntity.class.isAssignableFrom(boundSql.getParameterObject().getClass())) {
+                            newSql.append(((PageAndSortEntity) boundSql.getParameterObject()).addPageAndSortSql());
+                        }
+                    }
+
+                    ReflectionUtils.setField(sqlField, boundSql, newSql.toString());
                 }
             }
             return target;

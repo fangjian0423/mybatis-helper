@@ -4,6 +4,7 @@ import org.apache.ibatis.jdbc.SQL;
 import org.format.mybatis.helper.annotation.Column;
 import org.format.mybatis.helper.entity.Entity;
 import org.format.mybatis.helper.exception.MybatisHelperException;
+import org.format.mybatis.helper.query.DefaultPageAndSortEntity;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -13,16 +14,15 @@ public class SqlProvider {
     
     public static String TABLE_NAME = "TABLE";
 
-    public String query(Map<String, Object> dataMap) {
+    public String query(DefaultPageAndSortEntity defaultPageAndSortEntity) {
         try {
-            Object model = dataMap.get("model");
-            final Map<String, Object> entityData = getParam(model);
+            final Map<String, Object> entityData = getParam(defaultPageAndSortEntity);
             return new SQL() {
                 {
                     SELECT("*");
                     FROM(TABLE_NAME);
                     for(String column : entityData.keySet()) {
-                        WHERE(column + "=#{model." + entityData.get(column) + "}");
+                        WHERE(column + "=#{" + entityData.get(column) + "}");
                     }
                 }
             }.toString();
@@ -31,16 +31,15 @@ public class SqlProvider {
         }
     }
 
-    public String count(Map<String, Object> dataMap) {
+    public String count(DefaultPageAndSortEntity defaultPageAndSortEntity) {
         try {
-            Object model = dataMap.get("model");
-            final Map<String, Object> entityData = getParam(model);
+            final Map<String, Object> entityData = getParam(defaultPageAndSortEntity);
             return new SQL() {
                 {
                     SELECT("count(*)");
                     FROM(TABLE_NAME);
                     for(String column : entityData.keySet()) {
-                        WHERE(column + "=#{model." + entityData.get(column) + "}");
+                        WHERE(column + "=#{" + entityData.get(column) + "}");
                     }
                 }
             }.toString();

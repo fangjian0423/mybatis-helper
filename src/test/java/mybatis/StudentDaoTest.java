@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.log4j.Logger;
 import org.format.mybatis.helper.dao.StudentDao;
 import org.format.mybatis.helper.entity.Student;
+import org.format.mybatis.helper.entity.StudentDto;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,9 +38,11 @@ public class StudentDaoTest {
         try {
             sqlSession = sqlSessionFactory.openSession();
             StudentDao studentDao = sqlSession.getMapper(StudentDao.class);
-            List<Student> studentList = studentDao.query(new Student());
+            StudentDto dto = new StudentDto();
+            dto.setPageSize(1);
+            List<Student> studentList = studentDao.query(dto);
             System.out.println(studentList);
-            int count = studentDao.count(new Student());
+            int count = studentDao.count(dto);
             System.out.println(count);
         } finally {
             sqlSession.close();
@@ -52,7 +55,7 @@ public class StudentDaoTest {
         try {
             sqlSession = sqlSessionFactory.openSession();
             StudentDao studentDao = sqlSession.getMapper(StudentDao.class);
-            Student search = new Student();
+            StudentDto search = new StudentDto();
             search.setName("format33");
             List<Student> studentList = studentDao.query(search);
             System.out.println(studentList);
