@@ -7,6 +7,7 @@ import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.plugin.Invocation;
+import org.format.mybatis.helper.annotation.Table;
 import org.format.mybatis.helper.exception.MybatisHelperException;
 import org.format.mybatis.helper.provider.SqlProvider;
 import org.format.mybatis.helper.query.PageAndSortEntity;
@@ -65,7 +66,9 @@ public class MyBatisHelperInterceptor implements Interceptor {
                     Field sqlField = ReflectionUtils.findField(boundSql.getClass(), "sql");
                     ReflectionUtils.makeAccessible(sqlField);
 
-                    StringBuilder newSql = new StringBuilder(sql.replaceAll(SqlProvider.TABLE_NAME, entityCls.getSimpleName().toUpperCase()));
+                    String tableName = entityCls.getAnnotation(Table.class) == null ? entityCls.getSimpleName() : ((Table)entityCls.getAnnotation(Table.class)).value();
+
+                    StringBuilder newSql = new StringBuilder(sql.replaceAll(SqlProvider.TABLE_NAME, tableName));
 
                     if(mappedStatement.getSqlCommandType() == SqlCommandType.SELECT) {
                         // append page and sort sql

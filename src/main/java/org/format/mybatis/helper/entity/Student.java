@@ -2,8 +2,9 @@ package org.format.mybatis.helper.entity;
 
 
 import org.format.mybatis.helper.annotation.Column;
-import org.format.mybatis.helper.entity.Entity;
+import org.format.mybatis.helper.annotation.Table;
 
+@Table("student")
 public class Student extends Entity {
     private String name;
     @Column("classroom_id")
