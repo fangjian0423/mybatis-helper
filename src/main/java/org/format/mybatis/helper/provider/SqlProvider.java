@@ -76,6 +76,7 @@ public class SqlProvider {
     public String update(Entity model) {
         try {
             final Map<String, Object> entityData = getParam(model);
+            entityData.remove("id");
             return new SQL() {
                 {
                     UPDATE(TABLE_NAME);
