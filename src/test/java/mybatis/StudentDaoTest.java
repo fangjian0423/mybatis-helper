@@ -111,4 +111,16 @@ public class StudentDaoTest {
         }
     }
 
+    @Test
+    public void testGetById() {
+        SqlSession sqlSession = null;
+        try {
+            sqlSession = sqlSessionFactory.openSession();
+            StudentDao studentDao = sqlSession.getMapper(StudentDao.class);
+            System.out.println(studentDao.getById(4l).getName());
+        } finally {
+            sqlSession.close();
+        }
+    }
+
 }

@@ -57,6 +57,16 @@ public class SqlProvider {
         }.toString();
     }
 
+    public String getById(Long id) {
+        return new SQL() {
+            {
+                SELECT("*");
+                FROM(TABLE_NAME);
+                WHERE("id = #{id}");
+            }
+        }.toString();
+    }
+
     public String insert(Entity model) {
         try {
             final Field[] fields = model.getClass().getDeclaredFields();

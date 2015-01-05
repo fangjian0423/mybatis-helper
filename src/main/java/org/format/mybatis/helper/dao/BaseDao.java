@@ -19,6 +19,10 @@ public interface BaseDao<T extends Entity, DTO extends DefaultPageAndSortEntity>
     @SelectProvider(type = SqlProvider.class, method = "getAll")
     List<T> getAll();
 
+    @SelectProvider(type = SqlProvider.class, method = "getById")
+    @ResultMap("resultMap")
+    T getById(Long id);
+
     @InsertProvider(type = SqlProvider.class, method = "insert")
     int insert(T entity);
 
