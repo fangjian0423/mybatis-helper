@@ -4,6 +4,8 @@ import org.apache.ibatis.jdbc.SQL;
 import org.format.mybatis.helper.annotation.Column;
 import org.format.mybatis.helper.entity.Entity;
 import org.format.mybatis.helper.exception.MybatisHelperException;
+import org.format.mybatis.helper.handler.ColumnHandler;
+import org.format.mybatis.helper.handler.DefaultColumnHandler;
 import org.format.mybatis.helper.query.DefaultPageAndSortEntity;
 
 import java.lang.reflect.Field;
@@ -13,6 +15,8 @@ import java.util.Map;
 public class SqlProvider {
     
     public static String TABLE_NAME = "TABLE";
+
+    private ColumnHandler columnHandler = new DefaultColumnHandler();
 
     public String query(DefaultPageAndSortEntity defaultPageAndSortEntity) {
         try {
@@ -120,7 +124,7 @@ public class SqlProvider {
         for(int i = 0; i < fields.length; i ++) {
             fields[i].setAccessible(true);
             if(fields[i].get(model) != null) {
-                String column = fields[i].getAnnotation(Column.class) == null ? fields[i].getName() : fields[i].getAnnotation(Column.class).value();
+                String column = columnHandler.handle(fields[i]);
                 entityData.put(column, fields[i].getName());
             }
         }
